@@ -1,8 +1,11 @@
 import { fetchPageItemFromCached,fetchComponentFromCached,getQueryVariable } from '@/app/lib/data';
+import { auth } from "../../../auth"
 
 export default async function BootStrapJumbotron({ pathName, uid }: { pathName: string, uid: string }) {
-	const pageItem= await fetchPageItemFromCached(pathName,true,false,false);
-console.log('pageitem:'+JSON.stringify(pageItem));
+
+const session = await auth()
+
+const pageItem= await fetchPageItemFromCached(pathName,true,false,false);
 let callone = <></>;
 let calltwo = <></>;
 let callthree = <></>;
@@ -19,12 +22,23 @@ if(pageItem.Fields.calltoactionthree)
     callthree = <a href={pageItem.Fields.calltoactionthree.Fields.Url.replace("en/", '')} className="btn btn-danger my-2">{pageItem.Fields.calltoactionthree.Fields.Text}</a>
 }
 
+	let protectedContent =<></>;
+
+	if (session?.user) 
+	{
+		protectedContent =
+		<div className="protectedContent"><p> Only people who are signed in should see this content!</p></div>
+	}
+
+
+
 	return (
 <section className="jumbotron text-center">
     <div className="container">
         <p className="display-2"></p>
         <h1 className="jumbotron-heading">{pageItem.Fields.title}</h1>
         <p className="lead text-muted">{pageItem.Fields.leadcontent}</p>
+		{protectedContent}
         <p>
 	 		{callone} {calltwo} {callthree}
         </p>

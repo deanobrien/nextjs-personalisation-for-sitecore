@@ -106,18 +106,6 @@ a {
   }
 }
 
-.placeholder {
-	margin:10px;
-	padding:10px;
-	border: 2px dashed #00f;
-}
-.component {
-	margin:10px;
-	padding:10px;
-	border: 1px solid #f00
-	
-}
-
-
-
-
+.username {color:#fff;}
+.username button,.username form {display:inline-block}
+.protectedContent {padding:50px;background:#f00;color:#fff}

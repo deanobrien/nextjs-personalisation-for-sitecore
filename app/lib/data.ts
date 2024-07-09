@@ -16,6 +16,7 @@ async function getData( pathname: string, componentId:string, includeFields:bool
 	if(componentId) fetchUrl+='&componentId='+componentId
 
 	fetchUrl = 'https://myportal-devint.northumbria.ac.uk/sitecore/api/layoutservice/get?'+fetchUrl
+	console.log(fetchUrl);
 	const res = await fetch(fetchUrl, { cache: 'no-cache' })
 
   if (!res.ok) {
@@ -24,36 +25,36 @@ async function getData( pathname: string, componentId:string, includeFields:bool
   }
   return res.json()
 }
-export const fetchComponentsForPlaceHolder = async (placeHolderName: string, newPath: string): Promise<Component[]> => {
+export const fetchComponentsForPlaceHolder = async (placeHolderName: string, path: string): Promise<Component[]> => {
 	try {
-		const data = await getData(newPath,'',true,true,true,true)
+		const data = await getData(path,'',true,true,true,true)
 		return data.Route.Components.filter((item: Component) => item.PH.toLowerCase().endsWith(placeHolderName.toLowerCase()))
 
 	} catch (error) {
 		throw ('Error on placeholder '+placeHolderName+' :'+error);
 	}
 }
-export const fetchComponentFromCached = async (newPath: string, uid: string): Promise<Component> => {
+export const fetchComponentFromCached = async (path: string, uid: string): Promise<Component> => {
 	try {
 
 		// Rather than make multiple calls for each component - make one that is cached
-		const data = await getData(newPath,'',true,true,true,true);
+		const data = await getData(path,'',true,true,true,true);
 
         // Then query result
 		return data.Route.Components.find((item: Component) => item.UID.endsWith(uid));	} catch (error) {
 		throw ('Error on fetchComponent ' + uid + ' :' + error);
 	}
 };
-export const fetchPageItemFromCached = async (newPath: string, includeParents: boolean, includeChildren: boolean, includeSiblings: boolean): Promise<PageItem> => {
+export const fetchPageItemFromCached = async (path: string, includeParents: boolean, includeChildren: boolean, includeSiblings: boolean): Promise<PageItem> => {
 	try {
-		const data = await getData(newPath,'',true,true,true,true);
+		const data = await getData(path,'',true,true,true,true);
 		if(!includeParents) data.Route.Parents=null;
 		if(!includeChildren) data.Route.Children=null;
 		if(!includeSiblings) data.Route.Siblings=null;
 		data.Route.Components=[]
 		return data.Route;
 	} catch (error) {
-		throw ('Error on fetchPageItem ' + newPath + ' :' + error);
+		throw ('Error on fetchPageItem ' + path + ' :' + error);
 	}
 };
 export const fetchPath = async (slug: any): Promise<string> => {
@@ -82,8 +83,6 @@ export const fetchPath = async (slug: any): Promise<string> => {
 
 export const getQueryVariable = async(variable: any, queryString: any) : Promise<any> => {
 	try {
-		console.log(queryString);
-		console.log(variable)
     var vars = queryString.split('&');
     for (var i = 0; i < vars.length; i++) {
         var pair = vars[i].split('=');
@@ -91,7 +90,6 @@ export const getQueryVariable = async(variable: any, queryString: any) : Promise
             return decodeURIComponent(pair[1]);
         }
     }
-    console.log('Query variable %s not found', variable);
 	} catch (error) {
 		throw ('Error on getQueryVariable '+variable+' :'+error);
 	}

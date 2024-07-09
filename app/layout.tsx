@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
+import PlaceHolder from './Components/Core/PlaceHolder';
+import { fetchPath } from '@/app/lib/data';
 
 export const metadata: Metadata = {
   title: {
@@ -13,11 +15,13 @@ export const metadata: Metadata = {
 
 const inter = Inter({ subsets: ["latin"] });
 
-export default function RootLayout({
-  children,
+export default async function RootLayout({
+  children,slug
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+	  const pathName = await fetchPath(slug)
+	
   return (
     <html lang="en">
       <head>
@@ -31,7 +35,11 @@ export default function RootLayout({
 
       </head>
       <body className={inter.className}>
+	  
+	    <PlaceHolder placeHolderName="BootStrap-Header" pathName={pathName} />
         {children}
+		<PlaceHolder placeHolderName="bootstrap-footer" pathName={pathName} />
+		
       <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"></script>
       <script src="/js/vendor/popper.min.js"></script>
       <script src="/js/bootstrap.min.js"></script>

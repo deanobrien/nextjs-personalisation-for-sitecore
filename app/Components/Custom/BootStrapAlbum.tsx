@@ -4,7 +4,6 @@ export default async function BootStrapAlbum({ pathName, uid }: { pathName: stri
 	const pageItem= await fetchPageItemFromCached(pathName,true,false,false);
 	const component = await fetchComponentFromCached(pathName,uid);
 	const enableLinks = await getQueryVariable("Enable Links", component.PAR);
-	const onlyShowWithImage = await getQueryVariable("Only Show With Image", component.PAR);
 	let isLandscape = false;
 	const landscape=await getQueryVariable("Landscape", component.PAR)
 	if(landscape===null)
@@ -20,7 +19,6 @@ export default async function BootStrapAlbum({ pathName, uid }: { pathName: stri
 					pageItem.Fields.navigationitems.TreeListFields.map(
 						(obj) => (
 							  <>
-							  <p>{isLandscape} </p>
                               <NavItem obj={obj} enableLinks={enableLinks} isLandscape={isLandscape} />
 							  </>
                         )

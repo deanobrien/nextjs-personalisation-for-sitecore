@@ -1,3 +1,6 @@
+import UserButton from "../Core/UserButton"
+
+
 export default async function BootStrapPrimaryNavigationV2({ pathName, uid }: { pathName: string, uid: string }) {
 	return (
 		<header>
@@ -22,9 +25,7 @@ export default async function BootStrapPrimaryNavigationV2({ pathName, uid }: { 
 						<img src="https://personalisesc.dev.local/-/media/Personalisation/logo.png" style={{"height": "80px"}} />
 						<strong>Personalisation Demo</strong>
 					</a>
-					<button className="navbar-toggler collapsed" type="button" data-toggle="collapse" data-target="#navbarHeader" aria-controls="navbarHeader" aria-expanded="false" aria-label="Toggle navigation">
-						<span className="navbar-toggler-icon"></span>
-					</button>
+<UserButton/>
 				</div>
 			</div>
 		</header>

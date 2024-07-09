@@ -7,10 +7,7 @@ export default async function BootStrapPrimaryNavigation({ pathName, uid }: { pa
 			</button>
 
 			<div className="collapse navbar-collapse" id="navbarsExampleDefault">
-				<ul className="navbar-nav mr-auto">
-
-
-				</ul>
+<UserButton profileImgSrc={profileImgSrc} />
 			</div>
 		</nav>
 	);
