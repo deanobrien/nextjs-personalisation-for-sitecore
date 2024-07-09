@@ -6,13 +6,13 @@ const providers: Provider[]  = [
     
 	DuendeIDS6Provider({
 		clientId: "SitecoreCredentials",
-		clientSecret: "Northumbria@1",
-		issuer: "https://identity-devint.northumbria.ac.uk",
-		authorization: "https://identity-devint.northumbria.ac.uk/connect/authorize?scope=openid+sitecore.profile+email+profile",
+		clientSecret: "your-secret",
+		issuer: "https://your-domain",
+		authorization: "https://your-domain/connect/authorize?scope=openid+sitecore.profile+email+profile",
 		async authorize() {return true;},
 		async profile(profile, tokens, email) {
 			const response = await fetch(
-				`https://identity-devint.northumbria.ac.uk/connect/userinfo`,
+				`https://your-domain/connect/userinfo`,
 				{ headers: { Authorization: `Bearer ${tokens.access_token}` }, scope: "sitecore.profile" }
 			)
 			const json = await response.json()
@@ -37,6 +37,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 },
   callbacks: {
 	authorized({ auth, request: { nextUrl } }) {
+		console.log('norm auth')
 		// You could add logic here to restrict access to soecific pages
 		// See https://nextjs.org/learn/dashboard-app/adding-authentication
 		return true;

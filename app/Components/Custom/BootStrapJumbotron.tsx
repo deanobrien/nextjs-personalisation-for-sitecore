@@ -1,12 +1,15 @@
-import { fetchPageItemFromCached,fetchComponentFromCached,getQueryVariable } from '@/app/lib/data';
+import { fetchPageItemFromCached,fetchPageItemFromProtected,fetchComponentFromCached,getQueryVariable } from '@/app/lib/data';
 import { auth } from "../../../auth"
 
 export default async function BootStrapJumbotron({ pathName, uid }: { pathName: string, uid: string }) {
 
 const session = await auth()
 
+//const pageItem= await fetchPageItemFromProtected(pathName,true,false,false, session.token);
 const pageItem= await fetchPageItemFromCached(pathName,true,false,false);
+
 let callone = <></>;
+
 let calltwo = <></>;
 let callthree = <></>;
 if(pageItem.Fields.calltoactionone)
@@ -22,13 +25,13 @@ if(pageItem.Fields.calltoactionthree)
     callthree = <a href={pageItem.Fields.calltoactionthree.Fields.Url.replace("en/", '')} className="btn btn-danger my-2">{pageItem.Fields.calltoactionthree.Fields.Text}</a>
 }
 
-	let protectedContent =<></>;
+let protectedContent =<></>;
 
-	if (session?.user) 
-	{
-		protectedContent =
-		<div className="protectedContent"><p> Only people who are signed in should see this content!</p></div>
-	}
+if (session?.user) 
+{
+	protectedContent =
+	<div className="protectedContent"><p> Only people who are signed in should see this content!</p><p>Bearer token: {session.token}</p></div>
+}
 
 
 

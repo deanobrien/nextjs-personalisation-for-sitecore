@@ -15,7 +15,7 @@ async function getData( pathname: string, componentId:string, includeFields:bool
 	if(!includeFields) fetchUrl+='&includeFields=false'
 	if(componentId) fetchUrl+='&componentId='+componentId
 
-	fetchUrl = 'https://myportal-devint.northumbria.ac.uk/sitecore/api/layoutservice/get?'+fetchUrl
+	fetchUrl = 'https://your-domain/sitecore/api/layoutservice/get?'+fetchUrl
 	console.log(fetchUrl);
 	const res = await fetch(fetchUrl, { cache: 'no-cache' })
 
@@ -25,6 +25,48 @@ async function getData( pathname: string, componentId:string, includeFields:bool
   }
   return res.json()
 }
+export async function getProtectedData( pathname: string, token: string, options: RequestInit = {}) {
+console.log('PROTECTED')
+	if (typeof pathname == 'undefined') {
+		pathname = "/"
+	}
+	if(!pathname){
+		pathname = "/"
+	}
+
+	let fetchUrl='path='+pathname+'&lang=en&site=website&apiKey=ddd'
+
+	fetchUrl = 'https://your-domain.northumbria.ac.uk/sitecore/api/layoutservice/secure?'+fetchUrl
+
+console.log('PROTECTED:'+fetchUrl+' BEARER:'+token)
+	try {
+		const headers = new Headers(options.headers);
+	
+		if (token) {
+		  headers.set("Authorization", `Bearer ${token}`);
+		}
+		const response = await fetch(fetchUrl, { ...options, headers, "scope": "sitecore.profile" });
+	
+		if (!response.ok) {
+		  throw new Error(`HTTP error! Status: ${response.status}`);
+		}
+		else{
+			console.log('Success: '+response.body)
+		}
+	
+		const data = await response.json();
+		console.log('Success: '+JSON.stringify(data))
+
+		return data;
+	  } catch (error) {
+		console.error("Error fetching data:", error);
+		throw error;
+	  }
+}
+
+
+
+
 export const fetchComponentsForPlaceHolder = async (placeHolderName: string, path: string): Promise<Component[]> => {
 	try {
 		const data = await getData(path,'',true,true,true,true)
@@ -48,6 +90,19 @@ export const fetchComponentFromCached = async (path: string, uid: string): Promi
 export const fetchPageItemFromCached = async (path: string, includeParents: boolean, includeChildren: boolean, includeSiblings: boolean): Promise<PageItem> => {
 	try {
 		const data = await getData(path,'',true,true,true,true);
+		if(!includeParents) data.Route.Parents=null;
+		if(!includeChildren) data.Route.Children=null;
+		if(!includeSiblings) data.Route.Siblings=null;
+		data.Route.Components=[]
+		return data.Route;
+	} catch (error) {
+		throw ('Error on fetchPageItem ' + path + ' :' + error);
+	}
+};
+export const fetchPageItemFromProtected = async (path: string, includeParents: boolean, includeChildren: boolean, includeSiblings: boolean, token: string): Promise<PageItem> => {
+	console.log('PROTECTED fetchPageItemFromProtected')
+	try {
+		const data = await getProtectedData(path, token);
 		if(!includeParents) data.Route.Parents=null;
 		if(!includeChildren) data.Route.Children=null;
 		if(!includeSiblings) data.Route.Siblings=null;
